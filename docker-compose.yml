@@ -1,0 +1,20 @@
+version: "3"
+services:
+  monapp:
+    build: .
+    image: monimage
+    depends_on:
+      - redis
+    ports:
+      - "80:80"
+    networks:
+      - monreseau
+    environment:
+      - NOM=les amis
+  redis:
+    image: redis
+    networks:
+      - monreseau
+
+networks:
+  monreseau:
