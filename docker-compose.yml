@@ -2,7 +2,7 @@ version: "3"
 services:
   monapp:
     build: .
-    image: monimage
+    image: cocadminapp
     depends_on:
       - redis
     ports:
