@@ -4,19 +4,16 @@ pipeline {
     environment {
         PYTHON_VERSION = '3.10'
         VIRTUAL_ENV = "${WORKSPACE}/venv"
-        DOCKER_REGISTRY = 'docker hub repo'
-        IMAGE_NAME = ''
+        DOCKER_REGISTRY = 'https://hub.docker.com/r/kbenalaya/'
+        IMAGE_NAME = 'cocadminapp'
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
     
-    stages{
+    stages {
         stage('Checkout') {
             steps {
                 script {
-                    
-                    git credentialsId: 'github username or email', url: 'github rpo url', branch: 'main'
-
-                    // Additional steps for your pipeline
+                    git credentialsId: 'khalil.benalaya@outlook.com', url: 'https://github.com/OGjenzo/pipeline_jenkins.git', branch: 'main'
                 }
             }
         }
@@ -31,61 +28,60 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    sh "docker login -u <username> -p <pasword> docker.io"
-                    sh "docker build -t :${BUILD_NUMBER} ."
-                    
-                    sh "docker push :${BUILD_NUMBER}"
+                    sh "docker login -u kbenalaya -p <your docker token> docker.io"
+                    sh "docker build -t kbenalaya/cocadminapp:${BUILD_NUMBER} ."
+                    sh "docker push kbenalaya/cocadminapp:${BUILD_NUMBER}"
                 }
                 echo 'Construction et Push de l\'image Docker...'
             }
         }     
         
-        stage('Deploy to Dev Servers') {
-            steps {
-                echo 'Déploiement des serveurs de développement...'
-                // Implement deployment to development servers
-            }
-        }
-        
         stage('Run Unit and Functional Tests') {
             steps {
                 echo 'Run Unit and Functional Tests...'
-                //sh "${VIRTUAL_ENV}/bin/python -m pytest"
-                // Implement functional tests if applicable
+                sh "docker-compose up -d"
+                sh "${VIRTUAL_ENV}/bin/python -m pip install -r requirements.txt"
+                sh "${VIRTUAL_ENV}/bin/python -m pytest"   
+                sh "docker-compose down"
             }
         }
         
-        stage('Deploy to Pre-production Servers') {
-            steps {
-                echo 'Déploiement des serveurs de pré-production...'
-                // Implement deployment to pre-production servers
+        stage('Deploy to Production Server') {
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
             }
-        }
-        
-        stage('Deploy to Production Servers') {
             steps {
-                echo 'Déploiement des serveurs de production...'
-                // Implement deployment to production servers
-            }
-        }
-        
-        stage('Send Test Reports') {
-            steps {
-                echo 'Envoi/Stockage des rapports de tests...'
-                // Implement sending or storing test reports
+                echo 'Deploying to production server...'
+                
+                sh "git clone https://github.com/OGjenzo/pipeline_jenkins.git "
+                sh "docker push kbenalaya/cocadminapp:${BUILD_NUMBER}"
+                sh " cd pipeline_jenkins && docker-compose up -d"
+                
             }
         }
     }
-    
+
     post {
         success {
             echo 'Build and test successful!'
-            // Additional post-build tasks, notifications, or triggers can be added here
+
+            emailext(
+                subject: "Build and Test Successful",
+                body: "The build and test process was successful. Deployment to production is complete.",
+                to: "khalil.benalaya@outlook.com", // Specify the recipient email address
+                attachLog: true
+            )
         }
         
         failure {
             echo 'Build or test failed!'
-            // Additional actions, notifications, or cleanup tasks can be added here
+
+            emailext(
+                subject: "Build and Test Failed",
+                body: "The build and test process failed. Please check your code. Good luck :).",
+                to: "khalil.benalaya@outlook.com", // Specify the recipient email address
+                attachLog: true
+            )
         }
     }
 }
