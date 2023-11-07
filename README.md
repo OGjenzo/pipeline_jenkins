@@ -1,6 +1,6 @@
-# pipeline_jenkins : Apprentissage des Pipelines et de la Logique CI/CD avec Jenkins
+# Pipeline_jenkins : Apprentissage des Pipelines et de la Logique CI/CD avec Jenkins
 
-Description :
+**Description :**
 
 Notre projet d'apprentissage vise à explorer en profondeur les concepts des pipelines et de la logique CI/CD en utilisant l'outil Jenkins. Nous allons suivre un scénario de pipeline spécifique pour comprendre chaque étape du processus, du clonage du projet à partir du référentiel GitHub à son déploiement réussi sur un serveur de production à l'aide de Docker Compose.
 
