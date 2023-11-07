@@ -10,8 +10,8 @@ Notre projet d'apprentissage vise à explorer en profondeur les concepts des pip
 
 **Build de l'Application :** Après avoir cloné le projet, l'application est construite à l'aide des outils appropriés. Le build garantit que le code source est compilé correctement et que l'application est prête pour les tests.
 
-**Test de l'Application :** Une fois l'application construite, elle est soumise à des tests rigoureux pour garantir son bon fonctionnement. Les tests peuvent inclure des tests unitaires, des tests d'intégration et des tests de système pour vérifier chaque composant de l'application.
+**Test de l'Application :** Une fois l'application construite, elle est soumise à des tests pour garantir son bon fonctionnement. Les tests peuvent inclure des tests unitaires, des tests d'intégration et des tests de système pour vérifier chaque composant de l'application.
 
-**Push de l'Image dans Docker Hub :** Après avoir réussi les tests, l'image de l'application est construite et poussée dans Docker Hub. Cela crée une version encapsulée et prête à être déployée sur n'importe quel serveur compatible avec Docker.
+**Push de l'Image dans Docker Hub :** Après avoir réussi les tests, l'image de l'application est construite et poussée dans Docker Hub **kbenalaya/cocadminapp**. Cela crée une version encapsulée et prête à être déployée sur n'importe quel serveur compatible avec Docker .
 
 **Déploiement sur le Serveur de Production ou dans un Environnement Kubernetes :** L'image de l'application, disponible dans Docker Hub, peut être déployée soit sur un serveur de production traditionnel, soit dans un cluster Kubernetes en fonction des exigences spécifiques du projet. Dans le contexte d'un serveur de production, l'application est récupérée à partir de Docker Hub et déployée de manière fiable en utilisant Docker Compose à l'aide de la commande docker-compose up. Cela garantit une cohérence dans le déploiement de l'application sur le serveur de production. 
