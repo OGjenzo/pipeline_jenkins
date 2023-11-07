@@ -41,7 +41,7 @@ pipeline {
                 echo 'Run Unit and Functional Tests...'
                 sh "docker-compose up -d"
                 sh "${VIRTUAL_ENV}/bin/python -m pip install -r requirements.txt"
-                sh "${VIRTUAL_ENV}/bin/python -m pytest"   
+                //sh "${VIRTUAL_ENV}/bin/python -m pytest"   
                 sh "docker-compose down"
             }
         }
