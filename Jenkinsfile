@@ -10,7 +10,7 @@ pipeline {
     }
     
     stages {
-        stage('Checkout') {
+        stage('Checkout ' ) {
             steps {
                 script {
                     git credentialsId: 'khalil.benalaya@outlook.com', url: 'https://github.com/OGjenzo/pipeline_jenkins.git', branch: 'main'
@@ -28,7 +28,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    sh "docker login -u kbenalaya -p <your docker token> docker.io"
+                    sh "docker login -u kbenalaya -p dckr_pat_i-2CAACDgCxHKNY-76m6usGLVX0 docker.io"
                     sh "docker build -t kbenalaya/cocadminapp:${BUILD_NUMBER} ."
                     sh "docker push kbenalaya/cocadminapp:${BUILD_NUMBER}"
                 }
@@ -39,10 +39,12 @@ pipeline {
         stage('Run Unit and Functional Tests') {
             steps {
                 echo 'Run Unit and Functional Tests...'
+                
                 sh "docker-compose up -d"
                 sh "${VIRTUAL_ENV}/bin/python -m pip install -r requirements.txt"
-                //sh "${VIRTUAL_ENV}/bin/python -m pytest"   
                 sh "docker-compose down"
+                //sh "${VIRTUAL_ENV}/bin/python -m pytest"   
+                
             }
         }
         
@@ -52,11 +54,28 @@ pipeline {
             }
             steps {
                 echo 'Deploying to production server...'
-                
-                sh "git clone https://github.com/OGjenzo/pipeline_jenkins.git "
-                sh "docker push kbenalaya/cocadminapp:${BUILD_NUMBER}"
-                sh " cd pipeline_jenkins && docker-compose up -d"
-                
+                script {
+                    sshagent(credentials: ['541a6150-d9f9-48fc-8239-eed84cfc9e8c']) {
+                        sh """
+                            ssh ogjenzo@4.178.97.244 'echo "Deployment command" && whoami && docker-compose down && pwd  '
+                            
+                        
+                        """
+                        // Pull the appropriate image based on the BUILD_NUMBER
+                        sh """
+                            ssh ogjenzo@4.178.97.244 'docker pull kbenalaya/cocadminapp:${BUILD_NUMBER}' 
+                            
+                        """
+                        sh """
+                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo && git clone https://github.com/OGjenzo/pipeline_jenkins.git' 
+                            
+                        """
+                                // Run Docker Compose with the specific image version
+                        sh """
+                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo/pipeline_jenkins && docker-compose up -d'
+                        """
+                    }
+                }
             }
         }
     }
