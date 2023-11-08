@@ -28,7 +28,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    sh "docker login -u kbenalaya -p dckr_pat_i-2CAACDgCxHKNY-76m6usGLVX0 docker.io"
+                    sh "docker login -u kbenalaya -p ---------- docker.io"
                     sh "docker build -t kbenalaya/cocadminapp:${BUILD_NUMBER} ."
                     sh "docker push kbenalaya/cocadminapp:${BUILD_NUMBER}"
                 }
