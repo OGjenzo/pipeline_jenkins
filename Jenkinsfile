@@ -28,7 +28,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    sh "docker login -u kbenalaya -p ---------- docker.io"
+                    sh "docker login -u kbenalaya -p <your docker hub token> docker.io"
                     sh "docker build -t kbenalaya/cocadminapp:${BUILD_NUMBER} ."
                     sh "docker push kbenalaya/cocadminapp:${BUILD_NUMBER}"
                 }
@@ -55,9 +55,9 @@ pipeline {
             steps {
                 echo 'Deploying to production server...'
                 script {
-                    sshagent(credentials: ['541a6150-d9f9-48fc-8239-eed84cfc9e8c']) {
+                    sshagent(credentials: ['<credentials configured on jenkins >']) {
                         sh """
-                            ssh ogjenzo@4.178.97.244 'echo "Deployment command" && whoami && docker-compose down && pwd  '
+                            ssh ogjenzo@4.178.97.244 'echo "Deployment command" && whoami  && docker volume prune --force && pwd && rm -rf /home/ogjenzo/pipeline_jenkins '
                             
                         
                         """
@@ -72,7 +72,7 @@ pipeline {
                         """
                                 // Run Docker Compose with the specific image version
                         sh """
-                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo/pipeline_jenkins && docker-compose up -d'
+                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo/pipeline_jenkins && docker-compose down &&  docker-compose up -d'
                         """
                     }
                 }
