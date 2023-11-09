@@ -18,7 +18,7 @@ def hello():
     html = "<h3>Bonjour {nom}!</h3>" \
            "<b>Hostname:</b> {hostname}<br/>" \
            "<b>Visites:</b> {visites} <br/>" \
-           "<p>Abonne toi!</p>"
+           "<p>Stay tunned this project can run on k8s it will display the pod ID and a counter of how many times the pod was visited</p>"
     return html.format(nom=os.getenv("NOM", "youtube"), hostname=socket.gethostname(), visites=visites)
 
 if __name__ == "__main__":
