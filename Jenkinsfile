@@ -28,7 +28,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    sh "docker login -u kbenalaya -p <your docker hub token> docker.io"
+                    sh "docker login -u kbenalaya -p <tokenfor dockerhib> docker.io"
                     sh "docker build -t kbenalaya/cocadminapp:${BUILD_NUMBER} ."
                     sh "docker push kbenalaya/cocadminapp:${BUILD_NUMBER}"
                 }
@@ -55,24 +55,33 @@ pipeline {
             steps {
                 echo 'Deploying to production server...'
                 script {
-                    sshagent(credentials: ['<credentials configured on jenkins >']) {
+                    sshagent(credentials: ['your token']) {
                         sh """
-                            ssh ogjenzo@4.178.97.244 'echo "Deployment command" && whoami  && docker volume prune --force && pwd && rm -rf /home/ogjenzo/pipeline_jenkins '
+                            ssh ogjenzo@4.178.97.244 'echo "Deployment command" && whoami  && pwd && rm -rf /home/ogjenzo/pipeline_jenkins '
                             
-                        
+                            """
+                        sh """
+                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo && git clone https://github.com/OGjenzo/pipeline_jenkins.git' 
+                            
                         """
+                        sh """
+                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo/pipeline_jenkins && docker-compose down'
+                        """
+                            
+                        sh """
+                            ssh ogjenzo@4.178.97.244 './deleteimages.sh' 
+                            
+                        """
+                        
                         // Pull the appropriate image based on the BUILD_NUMBER
                         sh """
                             ssh ogjenzo@4.178.97.244 'docker pull kbenalaya/cocadminapp:${BUILD_NUMBER}' 
                             
                         """
-                        sh """
-                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo && git clone https://github.com/OGjenzo/pipeline_jenkins.git' 
-                            
-                        """
                                 // Run Docker Compose with the specific image version
+                        
                         sh """
-                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo/pipeline_jenkins && docker-compose down &&  docker-compose up -d'
+                            ssh ogjenzo@4.178.97.244 'cd /home/ogjenzo/pipeline_jenkins && docker-compose up -d'
                         """
                     }
                 }
