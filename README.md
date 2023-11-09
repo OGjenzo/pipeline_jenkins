@@ -17,8 +17,10 @@ Notre projet d'apprentissage vise à explorer en profondeur les concepts des pip
 **Déploiement sur le Serveur de Production ou dans un Environnement Kubernetes :** L'image de l'application, disponible dans Docker Hub, peut être déployée soit sur un serveur de production traditionnel, soit dans un cluster Kubernetes en fonction des exigences spécifiques du projet. Dans le contexte d'un serveur de production, l'application est récupérée à partir de Docker Hub et déployée de manière fiable en utilisant Docker Compose à l'aide de la commande docker-compose up. Cela garantit une cohérence dans le déploiement de l'application sur le serveur de production. 
 
 **avant un build**
+
 ![image](https://github.com/OGjenzo/pipeline_jenkins/assets/125826820/7090c875-18b7-4743-9d83-9311cce8b2ee)
 
 **aprés un build ( changement de l'image docker et remise a zero du compteur redis)**
+
 ![image](https://github.com/OGjenzo/pipeline_jenkins/assets/125826820/72e5a72a-323e-4026-ac10-ce874ea3b390)
 
